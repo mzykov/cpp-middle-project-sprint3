@@ -4,7 +4,7 @@
 #include <string>
 #include <string_view>
 #include <vector>
-#include <unordered_set>
+#include <set>
 
 #include "book.hpp"
 #include "concepts.hpp"
@@ -28,9 +28,16 @@ public:
     using reverse_iterator = BookContainer::reverse_iterator;
     using const_reverse_iterator = const reverse_iterator;
 
-    using AuthorContainer = std::unordered_set<std::string_view>;
+    using AuthorContainer = std::set<std::string_view>;
 
-    BookDatabase() = default;
+    constexpr BookDatabase() = default;
+    constexpr BookDatabase(std::initializer_list<Book> lst) : books_(lst) {
+        for (const auto &book : books_) {
+            if (const auto author = book.GetAuthor(); author.length() > 0) {
+                authors_.insert(author);
+            }
+        }
+    }
 
     void Clear() {
         books_.clear();
@@ -42,6 +49,10 @@ public:
     auto cbegin() { return books_.cbegin(); }
     auto end() { return books_.end(); }
     auto cend() { return books_.cend(); }
+    auto rbegin() { return books_.rbegin(); }
+    auto crbegin() { return books_.crbegin(); }
+    auto rend() { return books_.rend(); }
+    auto crend() { return books_.rcend(); }
 
     const BookContainer &GetBooks() const { return books_; }
     const AuthorContainer &GetAuthors() const { return authors_; }
@@ -52,6 +63,11 @@ public:
         if (auto author = books_.back().GetAuthor(); author.length() > 0) {
             authors_.insert(author);
         }
+    }
+
+    template <typename... Args>
+    void PushBack(Args... args) {
+        books_.push_back(std::forward(args...));
     }
 
 private:
@@ -67,7 +83,7 @@ template <>
 struct formatter<bookdb::BookDatabase<std::vector<bookdb::Book>>> {
     template <typename FormatContext>
     auto format(const bookdb::BookDatabase<std::vector<bookdb::Book>> &db, FormatContext &fc) const {
-        format_to(fc.out(), "BookDatabase (size = {}): ", db.size());
+        format_to(fc.out(), "BookDatabase (size = {}):\n", db.size());
 
         format_to(fc.out(), "Books:\n");
         for (const auto &book : db.GetBooks()) {

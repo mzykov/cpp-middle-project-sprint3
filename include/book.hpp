@@ -70,7 +70,7 @@ template <>
 struct formatter<bookdb::Book, char> {
     template <typename FormatContext>
     auto format(const bookdb::Book book, FormatContext &fc) const {
-        return format_to(fc.out(), "{}\n{} / {}", book.title, book.author, book.year);
+        return format_to(fc.out(), "{} / {} / {} / {}", book.title, book.author, book.year, book.genre);
     }
 
     constexpr auto parse(format_parse_context &ctx) {
