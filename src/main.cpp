@@ -8,21 +8,7 @@
 using namespace bookdb;
 
 int main() {
-    //
-    // Ниже приведён пример работы `BookDatabase`.
-    //
-    //     - Обратите внимание, что в этой функции реализованы основные возможности, охватывающие как обязательные, так
-    //     и опциональные требования,
-    //       которые не обязательны к реализации для сдачи работы.
-    //     - Не забудьте перед созданием коммита вызвать 'run_clang_format.sh' для форматирования кода
-    //
-
-    // Create a book database
     BookDatabase<std::vector<Book>> db;
-
-    /*
-
-    Код закомментирован, чтобы не приводить к ошибке компиляции
 
     // Add some books
     db.EmplaceBack("1984", "George Orwell", 1949, Genre::SciFi, 4., 190);
@@ -41,9 +27,10 @@ int main() {
     std::sort(db.begin(), db.end(), comp::LessByAuthor{});
     std::print("Books sorted by author: {}\n\n==================\n", db);
 
-    std::sort(db.begin(), db.end(), comp::LessByPopularity{});
+    std::sort(db.begin(), db.end(), comp::LessByRating{});
     std::print("Books sorted by popularity: {}\n\n==================\n", db);
 
+    /*
     // Author histogram
     auto histogram = buildAuthorHistogramFlat(db);
     std::print("Author histogram: {}", histogram);
