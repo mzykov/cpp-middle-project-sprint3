@@ -1,6 +1,7 @@
 #pragma once
 
 #include <algorithm>
+#include <array>
 #include <format>
 #include <stdexcept>
 #include <string_view>
@@ -66,7 +67,9 @@ template <>
 struct formatter<bookdb::Book, char> {
     template <typename FormatContext>
     auto format(const bookdb::Book book, FormatContext &fc) const {
-        return format_to(fc.out(), "{} / {} / {} / {}", book.title, book.author, book.year, book.genre);
+        constexpr std::array<std::string_view, 6> rates{{"☆☆☆☆☆", "★☆☆☆☆", "★★☆☆☆", "★★★☆☆", "★★★★☆", "★★★★★"}};
+        return format_to(fc.out(), "{} / {} / {} / {} / {:.3} {}", book.title, book.author, book.year, book.genre,
+                         book.rating, rates[static_cast<int>(book.rating)]);
     }
 
     constexpr auto parse(format_parse_context &ctx) {

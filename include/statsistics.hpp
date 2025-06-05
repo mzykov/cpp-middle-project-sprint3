@@ -6,6 +6,7 @@
 #include <stdexcept>
 #include <string_view>
 #include <utility>
+#include <vector>
 
 #include "book_database.hpp"
 
@@ -16,16 +17,18 @@
 namespace bookdb {
 
 template <BookContainerLike T, typename Comparator = TransparentStringLess>
-auto buildAuthorHistogramFlat(BookDatabase<T> &db, Comparator comp = {}) {
+auto buildAuthorHistogramFlat(BookDatabase<T> &db, Comparator cmp = {}) {
     boost::container::flat_map<std::string_view, std::size_t> hist;
+
     for (const auto &book : db) {
         ++hist[book.GetAuthor()];
     }
+
     return hist;
 }
 
 template <BookContainerLike T, typename Comparator = TransparentStringLess>
-auto calculateGenreRatings(BookDatabase<T> &db, Comparator comp = {}) {
+auto calculateGenreRatings(BookDatabase<T> &db, Comparator cmp = {}) {
     boost::container::flat_map<Genre, std::pair<std::size_t, double>> stats;
 
     for (const auto &book : db) {
@@ -41,6 +44,28 @@ auto calculateGenreRatings(BookDatabase<T> &db, Comparator comp = {}) {
     }
 
     return hist;
+}
+
+template <BookContainerLike T, typename Aggregator = TransparentRatingPlus>
+auto calculateAverageRating(BookDatabase<T> &db, Aggregator aggr = {}) {
+    double res = 0.0;
+    for (const auto &book : db) {
+        res += book.GetRating();
+    }
+    return static_cast<double>(res / db.size());
+}
+
+template <BookContainerLike T, typename Comparator>
+auto getTopNBy(BookDatabase<T> &db, std::size_t top, Comparator cmp) {
+    {
+        auto mid = std::next(db.begin(), top);
+        std::partial_sort(db.begin(), mid, db.end(), cmp);
+    }
+
+    auto mid = std::next(db.begin(), top);
+    std::vector<Book> res(db.begin(), mid);
+
+    return res;
 }
 
 }  // namespace bookdb

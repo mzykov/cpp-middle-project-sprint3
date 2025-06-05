@@ -12,4 +12,8 @@ struct LessByRating {
     bool operator()(const Book &lhd, const Book &rhd) { return lhd.rating < rhd.rating; }
 };
 
+struct GreaterByRating {
+    bool operator()(const Book &lhd, const Book &rhd) { return lhd.rating > rhd.rating; }
+};
+
 }  // namespace bookdb::comp
