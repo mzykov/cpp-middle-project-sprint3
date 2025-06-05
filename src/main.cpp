@@ -30,11 +30,11 @@ int main() {
     std::sort(db.begin(), db.end(), comp::LessByRating{});
     std::print("Books sorted by popularity: {}\n\n==================\n", db);
 
-    /*
     // Author histogram
     auto histogram = buildAuthorHistogramFlat(db);
-    std::print("Author histogram: {}", histogram);
+    std::print("Author histogram:\n{}", histogram);
 
+    /*
     // Ratings
     auto genreRatings = calculateGenreRatings(db.begin(), db.end());
     std::print("\n\nAverage ratings by genres: {}\n", genreRatings);
@@ -51,12 +51,12 @@ int main() {
     auto topBooks = getTopNBy(db, 3, comp::LessByRating{});
     std::print("\n\nTop 3 books by rating:\n");
     std::for_each(topBooks.cbegin(), topBooks.cend(), [](const auto &v) { std::print("{}\n", v.get()); });
+    */
 
     auto orwellBookIt = std::find_if(db.begin(), db.end(), [](const auto &v) { return v.author == "George Orwell"; });
     if (orwellBookIt != db.end()) {
         std::print("\n\nTransparent lookup by authors. Found Orwell's book: {}\n", *orwellBookIt);
     }
-    */
 
     return 0;
 }
