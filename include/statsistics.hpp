@@ -5,6 +5,7 @@
 #include <random>
 #include <stdexcept>
 #include <string_view>
+#include <utility>
 
 #include "book_database.hpp"
 
@@ -16,10 +17,29 @@ namespace bookdb {
 
 template <BookContainerLike T, typename Comparator = TransparentStringLess>
 auto buildAuthorHistogramFlat(BookDatabase<T> &db, Comparator comp = {}) {
-    boost::container::flat_map<std::string_view, int> hist;
+    boost::container::flat_map<std::string_view, std::size_t> hist;
     for (const auto &book : db) {
         ++hist[book.GetAuthor()];
     }
+    return hist;
+}
+
+template <BookContainerLike T, typename Comparator = TransparentStringLess>
+auto calculateGenreRatings(BookDatabase<T> &db, Comparator comp = {}) {
+    boost::container::flat_map<Genre, std::pair<std::size_t, double>> stats;
+
+    for (const auto &book : db) {
+        auto g = book.GetGenre();
+        ++std::get<std::size_t>(stats[g]);
+        std::get<double>(stats[g]) += book.GetRating();
+    }
+
+    boost::container::flat_map<std::string_view, double> hist;
+
+    for (const auto &[genre, stat] : stats) {
+        hist[GenreToString(genre)] = static_cast<double>(std::get<double>(stat) / std::get<std::size_t>(stat));
+    }
+
     return hist;
 }
 
@@ -28,11 +48,26 @@ auto buildAuthorHistogramFlat(BookDatabase<T> &db, Comparator comp = {}) {
 namespace std {
 
 template <>
-struct formatter<boost::container::flat_map<std::string_view, int>> {
+struct formatter<boost::container::flat_map<std::string_view, std::size_t>> {
     template <typename FormatContext>
-    auto format(const boost::container::flat_map<std::string_view, int> &hist, FormatContext &fc) const {
-        for (const auto &[author, val] : hist) {
-            format_to(fc.out(), "{:20}\t{}\n", author, std::string(val, '='));
+    auto format(const boost::container::flat_map<std::string_view, std::size_t> &hist, FormatContext &fc) const {
+        for (const auto &[key, val] : hist) {
+            format_to(fc.out(), "{:30} |{}\n", key, std::string(val, '='));
+        }
+        return fc.out();
+    }
+
+    constexpr auto parse(format_parse_context &ctx) {
+        return ctx.begin();  // Просто игнорируем пользовательский формат
+    }
+};
+
+template <>
+struct formatter<boost::container::flat_map<std::string_view, double>> {
+    template <typename FormatContext>
+    auto format(const boost::container::flat_map<std::string_view, double> &hist, FormatContext &fc) const {
+        for (const auto &[key, val] : hist) {
+            format_to(fc.out(), "{}: {:.3}\n", key, val);
         }
         return fc.out();
     }

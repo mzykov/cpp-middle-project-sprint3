@@ -35,19 +35,15 @@ struct Book {
     double rating = 0.0;
     unsigned int read_count = 0;
 
-    constexpr Book(
-        const std::string& book_title,
-        std::string_view book_author,
-        unsigned int book_year,
-        Genre book_genre,
-        double book_rating,
-        unsigned int book_read_count
-        )
-    : title(book_title), author(book_author), year(book_year), genre(book_genre), rating(book_rating), read_count(book_read_count) {}
-    //constexpr Book(std::string_view genre_sv) : genre(GenreFromString(genre_sv)) {}
+    constexpr Book(const std::string &book_title, std::string_view book_author, unsigned int book_year,
+                   Genre book_genre, double book_rating, unsigned int book_read_count)
+        : title(book_title), author(book_author), year(book_year), genre(book_genre), rating(book_rating),
+          read_count(book_read_count) {}
+    // constexpr Book(std::string_view genre_sv) : genre(GenreFromString(genre_sv)) {}
 
     const std::string_view GetAuthor() const { return author; }
     const Genre GetGenre() const { return genre; }
+    const double GetRating() const { return rating; }
 };
 
 }  // namespace bookdb

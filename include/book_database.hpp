@@ -1,10 +1,10 @@
 #pragma once
 
 #include <print>
+#include <set>
 #include <string>
 #include <string_view>
 #include <vector>
-#include <set>
 
 #include "book.hpp"
 #include "concepts.hpp"
@@ -19,7 +19,7 @@ public:
     using allocator_type = BookContainer::allocator_type;
     using size_type = BookContainer::size_type;
     using difference_type = BookContainer::difference_type;
-    using reference = value_type&;
+    using reference = value_type &;
     using const_reference = const reference;
     using pointer = BookContainer::pointer;
     using const_pointer = const pointer;
