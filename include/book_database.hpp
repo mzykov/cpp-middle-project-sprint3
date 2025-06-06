@@ -3,7 +3,6 @@
 #include <print>
 #include <set>
 #include <string>
-#include <string_view>
 #include <vector>
 
 #include "book.hpp"
@@ -31,7 +30,7 @@ public:
     using AuthorContainer = std::set<std::string_view>;
 
     constexpr BookDatabase() = default;
-    constexpr BookDatabase(std::initializer_list<Book> lst) : books_(lst) {
+    constexpr BookDatabase(std::initializer_list<const Book> lst) : books_(lst) {
         for (const auto &book : books_) {
             if (const auto author = book.GetAuthor(); author.length() > 0) {
                 authors_.insert(author);
@@ -39,11 +38,12 @@ public:
         }
     }
 
-    void Clear() {
+    void clear() {
         books_.clear();
         authors_.clear();
     }
 
+    bool empty() const { return books_.empty() && authors_.empty(); }
     std::size_t size() const { return books_.size(); }
     auto begin() { return books_.begin(); }
     auto cbegin() { return books_.cbegin(); }
@@ -57,17 +57,18 @@ public:
     const BookContainer &GetBooks() const { return books_; }
     const AuthorContainer &GetAuthors() const { return authors_; }
 
-    template <typename... Args>
-    void EmplaceBack(Args... args) {
-        books_.emplace_back(args...);
+    void EmplaceBack(auto &&...args) {
+        books_.emplace_back(std::forward<decltype(args)>(args)...);
         if (auto author = books_.back().GetAuthor(); author.length() > 0) {
             authors_.insert(author);
         }
     }
 
-    template <typename... Args>
-    void PushBack(Args... args) {
-        books_.push_back(std::forward(args...));
+    void PushBack(auto &&...args) {
+        books_.push_back(std::forward<decltype(args)>(args)...);
+        if (auto author = books_.back().GetAuthor(); author.length() > 0) {
+            authors_.insert(author);
+        }
     }
 
 private:
