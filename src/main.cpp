@@ -24,44 +24,64 @@ int main() {
     std::print("Books: {}\n\n", db);
 
     // Sorts
-    std::sort(db.begin(), db.end(), comp::LessByAuthor{});
-    std::print("Books sorted by author: {}\n\n==================\n", db);
+    {
+        std::sort(db.begin(), db.end(), comp::LessByAuthor{});
+        std::print("Books sorted by author: {}\n\n==================\n", db);
 
-    std::sort(db.begin(), db.end(), comp::LessByRating{});
-    std::print("Books sorted by popularity: {}\n\n==================\n", db);
+        std::sort(db.begin(), db.end(), comp::LessByRating{});
+        std::print("Books sorted by popularity: {}\n\n==================\n", db);
+    }
 
     // Author histogram
-    auto histogram = buildAuthorHistogramFlat(db);
-    std::print("Author histogram:\n{}", histogram);
+    {
+        auto histogram = buildAuthorHistogramFlat(db);
+        std::print("Author histogram:\n{}", histogram);
+    }
 
     // Ratings
-    auto genreRatings = calculateGenreRatings(db);
-    std::print("\n\nAverage ratings by genres:\n{}\n", genreRatings);
+    {
+        auto genreRatings = calculateGenreRatings(db);
+        std::print("\n\nAverage ratings by genres:\n{}\n", genreRatings);
 
-    auto avgRating = calculateAverageRating(db);
-    std::print("Average books rating in library: {}\n", avgRating);
+        auto avgRating = calculateAverageRating(db);
+        std::print("Average books rating in library: {}\n", avgRating);
+    }
 
-    // Filters
-    auto yb = YearBetween(1900, 1999);
-    auto ra = RatingAbove(4.5);
-    auto filtered = filterBooks(db.begin(), db.end(), all_of<decltype(yb), decltype(ra)>(yb, ra));
-    // auto filtered = filterBooks(db.begin(), db.end(), all_of(YearBetween(1900, 1999), RatingAbove(4.5)));
-    std::print("\n\nBooks from the 20th century with rating ≥ 4.5:\n");
-    std::for_each(filtered.cbegin(), filtered.cend(), [](const auto &v) { std::print("{}\n", v.get()); });
+    // Filters all_of
+    {
+        auto filtered = filterBooks(db.begin(), db.end(), all_of(YearBetween(1900, 1999), RatingAbove(4.5)));
+        std::print("\n\nBooks from the 20th century with rating ≥ 4.5:\n");
+        std::for_each(filtered.cbegin(), filtered.cend(), [](const auto &v) { std::print("{}\n", v.get()); });
+    }
+
+    // Filters any_of
+    {
+        auto filtered = filterBooks(db.begin(), db.end(), any_of(GenreIs("SciFi"), RatingAbove(4.8)));
+        std::print("\n\nBooks in SciFi genre or rating ≥ 4.8:\n");
+        std::for_each(filtered.cbegin(), filtered.cend(), [](const auto &v) { std::print("{}\n", v.get()); });
+    }
 
     // Top 3 books
-    auto topBooks = getTopNBy(db, 3, comp::GreaterByRating{});
-    std::print("\n\nTop 3 books by rating:\n");
-    std::for_each(topBooks.cbegin(), topBooks.cend(), [](const auto &v) { std::print("{}\n", v.get()); });
+    {
+        auto topBooks = getTopNBy(db, 3, comp::GreaterByRating{});
+        std::print("\n\nTop 3 books by rating:\n");
+        std::for_each(topBooks.cbegin(), topBooks.cend(), [](const auto &v) { std::print("{}\n", v.get()); });
+    }
 
     // Random sample books
-    auto randomBooks = sampleRandomBooks(db, 3);
-    std::print("\n\nRandom books sample of length 3:\n");
-    std::for_each(randomBooks.cbegin(), randomBooks.cend(), [](const auto &v) { std::print("{}\n", v.get()); });
+    {
+        auto randomBooks = sampleRandomBooks(db, 3);
+        std::print("\n\nRandom books sample of length 3:\n");
+        std::for_each(randomBooks.cbegin(), randomBooks.cend(), [](const auto &v) { std::print("{}\n", v.get()); });
+    }
 
-    auto orwellBookIt = std::find_if(db.begin(), db.end(), [](const auto &v) { return v.author == "George Orwell"; });
-    if (orwellBookIt != db.end()) {
-        std::print("\n\nTransparent lookup by authors. Found Orwell's book: {}\n", *orwellBookIt);
+    // Find if
+    {
+        auto orwellBookIt =
+            std::find_if(db.begin(), db.end(), [](const auto &v) { return v.GetAuthor() == "George Orwell"; });
+        if (orwellBookIt != db.end()) {
+            std::print("\n\nTransparent lookup by authors. Found Orwell's book: {}\n", *orwellBookIt);
+        }
     }
 
     return 0;

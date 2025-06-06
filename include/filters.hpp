@@ -15,15 +15,18 @@ auto filterBooks(InputIt first, InputIt last, UnaryPred pred) {
     return res;
 }
 
-auto GenreIs = [](const Genre genre) { return [genre](const Book &book) { return book.GetGenre() == genre; }; };
+auto GenreIs = [](std::string_view genre) {
+    return [genre](const Book &book) { return book.GetGenre() == GenreFromString(genre); };
+};
 
-auto RatingAbove = [](const double above) { return [above](const Book &book) { return book.GetRating() > above; }; };
+auto RatingAbove = [](const double above) { return [above](const Book &book) { return book.GetRating() >= above; }; };
 
 auto YearBetween = [](const unsigned int l, const unsigned int r) {
     return [l, r](const Book &book) { return l <= book.GetYear() && book.GetYear() <= r; };
 };
 
-template <class... UnaryPred>
-auto all_of = [](UnaryPred... pred) { return [&](const Book &book) { return (pred(book) && ...); }; };
+auto all_of = [](auto &&...pred) { return [&](const Book &book) { return (pred(book) && ...); }; };
+
+auto any_of = [](auto &&...pred) { return [&](const Book &book) { return (pred(book) || ...); }; };
 
 }  // namespace bookdb
