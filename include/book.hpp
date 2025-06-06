@@ -3,29 +3,23 @@
 #include <algorithm>
 #include <array>
 #include <format>
-#include <stdexcept>
-#include <string_view>
-#include <variant>
+#include <string>
 
 namespace bookdb {
 
 enum class Genre { Fiction, NonFiction, SciFi, Biography, Mystery, Unknown };
+constexpr std::array<std::string_view, 6> GenreStr{"Fiction", "NonFiction", "SciFi", "Biography", "Mystery", "Unknown"};
 
 constexpr Genre GenreFromString(std::string_view sv) {
-    const std::vector<std::string_view> m{"Fiction", "NonFiction", "SciFi", "Biography", "Mystery", "Unknown"};
-    const auto it = std::find(m.begin(), m.end(), sv);
-
-    if (it == m.end()) {
+    const auto it = std::find(GenreStr.begin(), GenreStr.end(), sv);
+    if (it == GenreStr.end()) {
         return Genre::Unknown;
     } else {
-        return static_cast<Genre>(std::distance(m.begin(), it));
+        return static_cast<Genre>(std::distance(GenreStr.begin(), it));
     }
 }
 
-constexpr std::string_view GenreToString(Genre g) {
-    const std::vector<std::string_view> m{"Fiction", "NonFiction", "SciFi", "Biography", "Mystery", "Unknown"};
-    return m.at(static_cast<int>(g));
-}
+constexpr std::string_view GenreToString(Genre g) { return GenreStr[static_cast<std::size_t>(g)]; }
 
 struct Book {
     std::string title;
@@ -36,11 +30,41 @@ struct Book {
     double rating = 0.0;
     unsigned int read_count = 0;
 
-    constexpr Book(const std::string &book_title, std::string_view book_author, unsigned int book_year,
-                   Genre book_genre, double book_rating, unsigned int book_read_count)
-        : title(book_title), author(book_author), year(book_year), genre(book_genre), rating(book_rating),
-          read_count(book_read_count) {}
-    // constexpr Book(std::string_view genre_sv) : genre(GenreFromString(genre_sv)) {}
+    // clang-format off
+    constexpr Book(
+        const std::string &book_title,
+        std::string_view   book_author,
+        unsigned int       book_year,
+        Genre              book_genre, // Genre as enum
+        double             book_rating,
+        unsigned int       book_read_count
+    ) :
+        title(book_title),
+        author(book_author),
+        year(book_year),
+        genre(book_genre),
+        rating(book_rating),
+        read_count(book_read_count)
+    {}
+    // clang-format on
+
+    // clang-format off
+    constexpr Book(
+        const std::string &book_title,
+        std::string_view   book_author,
+        unsigned int       book_year,
+        std::string_view   book_genre, // Genre as str
+        double             book_rating,
+        unsigned int       book_read_count
+    ) :
+        title(book_title),
+        author(book_author),
+        year(book_year),
+        genre(GenreFromString(book_genre)),
+        rating(book_rating),
+        read_count(book_read_count)
+    {}
+    // clang-format on
 
     const std::string_view GetAuthor() const { return author; }
     const Genre GetGenre() const { return genre; }
@@ -69,8 +93,14 @@ struct formatter<bookdb::Book, char> {
     template <typename FormatContext>
     auto format(const bookdb::Book book, FormatContext &fc) const {
         constexpr std::array<std::string_view, 6> rates{{"☆☆☆☆☆", "★☆☆☆☆", "★★☆☆☆", "★★★☆☆", "★★★★☆", "★★★★★"}};
-        return format_to(fc.out(), "{} / {} / {} / {} / {:.3} {}", book.title, book.author, book.year, book.genre,
-                         book.rating, rates[static_cast<int>(book.rating)]);
+        // clang-format off
+        return format_to(
+            fc.out(),
+            "{} / {} / {} / {} / {:.3} {}",
+            book.title, book.author, book.year, book.genre, book.rating,
+            rates[static_cast<int>(book.rating)]
+        );
+        // clang-format on
     }
 
     constexpr auto parse(format_parse_context &ctx) {
