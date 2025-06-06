@@ -45,6 +45,7 @@ struct Book {
     const std::string_view GetAuthor() const { return author; }
     const Genre GetGenre() const { return genre; }
     const double GetRating() const { return rating; }
+    const unsigned int GetYear() const { return year; }
 };
 
 }  // namespace bookdb

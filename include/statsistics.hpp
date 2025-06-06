@@ -63,8 +63,15 @@ auto getTopNBy(BookDatabase<T> &db, std::size_t top, Comparator cmp) {
     }
 
     auto mid = std::next(db.begin(), top);
-    std::vector<Book> res(db.begin(), mid);
+    std::vector<std::reference_wrapper<const Book>> res(db.begin(), mid);
 
+    return res;
+}
+
+template <BookContainerLike T>
+auto sampleRandomBooks(BookDatabase<T> &db, std::size_t top) {
+    std::vector<std::reference_wrapper<const Book>> res;
+    std::sample(db.cbegin(), db.cend(), std::back_inserter(res), top, std::mt19937{std::random_device{}()});
     return res;
 }
 

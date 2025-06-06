@@ -41,17 +41,23 @@ int main() {
     auto avgRating = calculateAverageRating(db);
     std::print("Average books rating in library: {}\n", avgRating);
 
-    /*
     // Filters
-    auto filtered = filterBooks(db.begin(), db.end(), all_of(YearBetween(1900, 1999), RatingAbove(4.5)));
+    auto yb = YearBetween(1900, 1999);
+    auto ra = RatingAbove(4.5);
+    auto filtered = filterBooks(db.begin(), db.end(), all_of<decltype(yb), decltype(ra)>(yb, ra));
+    // auto filtered = filterBooks(db.begin(), db.end(), all_of(YearBetween(1900, 1999), RatingAbove(4.5)));
     std::print("\n\nBooks from the 20th century with rating ≥ 4.5:\n");
     std::for_each(filtered.cbegin(), filtered.cend(), [](const auto &v) { std::print("{}\n", v.get()); });
-    */
 
     // Top 3 books
     auto topBooks = getTopNBy(db, 3, comp::GreaterByRating{});
     std::print("\n\nTop 3 books by rating:\n");
-    std::for_each(topBooks.cbegin(), topBooks.cend(), [](const auto &v) { std::print("{}\n", v); });
+    std::for_each(topBooks.cbegin(), topBooks.cend(), [](const auto &v) { std::print("{}\n", v.get()); });
+
+    // Random sample books
+    auto randomBooks = sampleRandomBooks(db, 3);
+    std::print("\n\nRandom books sample of length 3:\n");
+    std::for_each(randomBooks.cbegin(), randomBooks.cend(), [](const auto &v) { std::print("{}\n", v.get()); });
 
     auto orwellBookIt = std::find_if(db.begin(), db.end(), [](const auto &v) { return v.author == "George Orwell"; });
     if (orwellBookIt != db.end()) {
