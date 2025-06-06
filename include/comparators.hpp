@@ -13,7 +13,11 @@ struct LessByRating {
 };
 
 struct GreaterByRating {
-    bool operator()(const Book &lhd, const Book &rhd) { return lhd.rating > rhd.rating; }
+    bool operator()(const Book &lhd, const Book &rhd) { return lhd.rating >= rhd.rating; }
+};
+
+struct GreaterByReadCount {
+    bool operator()(const Book &lhd, const Book &rhd) { return lhd.read_count >= rhd.read_count; }
 };
 
 }  // namespace bookdb::comp

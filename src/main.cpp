@@ -23,13 +23,16 @@ int main() {
     db.EmplaceBack("Lord of the Flies", "William Golding", 1954, Genre::Fiction, 4.2, 89);
     std::print("Books: {}\n\n", db);
 
-    // Sorts
+    // Sort by author
     {
         std::sort(db.begin(), db.end(), comp::LessByAuthor{});
         std::print("Books sorted by author: {}\n\n==================\n", db);
+    }
 
+    // Sort by rating
+    {
         std::sort(db.begin(), db.end(), comp::LessByRating{});
-        std::print("Books sorted by popularity: {}\n\n==================\n", db);
+        std::print("Books sorted by rating: {}\n\n==================\n", db);
     }
 
     // Author histogram
@@ -61,10 +64,17 @@ int main() {
         std::for_each(filtered.cbegin(), filtered.cend(), [](const auto &v) { std::print("{}\n", v.get()); });
     }
 
-    // Top 3 books
+    // Top 3 books by rating
     {
         auto topBooks = getTopNBy(db, 3, comp::GreaterByRating{});
         std::print("\n\nTop 3 books by rating:\n");
+        std::for_each(topBooks.cbegin(), topBooks.cend(), [](const auto &v) { std::print("{}\n", v.get()); });
+    }
+
+    // Most readable book
+    {
+        auto topBooks = getTopNBy(db, 1, comp::GreaterByReadCount{});
+        std::print("\n\nMost readable book:\n");
         std::for_each(topBooks.cbegin(), topBooks.cend(), [](const auto &v) { std::print("{}\n", v.get()); });
     }
 
