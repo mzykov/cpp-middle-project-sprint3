@@ -3,6 +3,7 @@
 #include <algorithm>
 #include <array>
 #include <format>
+#include <stdexcept>
 #include <string>
 
 namespace bookdb {
@@ -20,6 +21,15 @@ constexpr Genre GenreFromString(std::string_view sv) {
 }
 
 constexpr std::string_view GenreToString(Genre g) { return GenreStr[static_cast<std::size_t>(g)]; }
+
+constexpr double CheckRating(const double rating) {
+    constexpr double low = 0.0, high = 5.0;
+    if (low <= rating && rating <= high) {
+        return rating;
+    } else {
+        throw std::invalid_argument{"Invalid rating value"};
+    }
+}
 
 struct Book {
     std::string title;
@@ -43,7 +53,7 @@ struct Book {
         author(book_author),
         year(book_year),
         genre(book_genre),
-        rating(book_rating),
+        rating(CheckRating(book_rating)),
         read_count(book_read_count)
     {}
     // clang-format on
@@ -61,15 +71,17 @@ struct Book {
         author(book_author),
         year(book_year),
         genre(GenreFromString(book_genre)),
-        rating(book_rating),
+        rating(CheckRating(book_rating)),
         read_count(book_read_count)
     {}
     // clang-format on
 
+    const std::string &GetTitle() const { return title; }
     const std::string_view GetAuthor() const { return author; }
+    const unsigned int GetYear() const { return year; }
     const Genre GetGenre() const { return genre; }
     const double GetRating() const { return rating; }
-    const unsigned int GetYear() const { return year; }
+    const unsigned int GetReadCount() const { return read_count; }
 };
 
 }  // namespace bookdb
@@ -97,8 +109,8 @@ struct formatter<bookdb::Book, char> {
         return format_to(
             fc.out(),
             "{} / {} / {} / {} / {:.3} {}",
-            book.title, book.author, book.year, book.genre, book.rating,
-            rates[static_cast<int>(book.rating)]
+            book.GetTitle(), book.GetAuthor(), book.GetYear(), book.GetGenre(), book.GetRating(),
+            rates[static_cast<std::size_t>(book.GetRating())]
         );
         // clang-format on
     }
