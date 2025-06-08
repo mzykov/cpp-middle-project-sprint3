@@ -47,12 +47,12 @@ public:
     std::size_t size() const { return books_.size(); }
     auto begin() { return books_.begin(); }
     auto end() { return books_.end(); }
-    auto cbegin() const { return books_.cbegin(); }
-    auto cend() const { return books_.cend(); }
+    const auto cbegin() const { return books_.cbegin(); }
+    const auto cend() const { return books_.cend(); }
     auto rbegin() { return books_.rbegin(); }
     auto rend() { return books_.rend(); }
-    auto crbegin() const { return books_.crbegin(); }
-    auto crend() const { return books_.rcend(); }
+    const auto crbegin() const { return books_.crbegin(); }
+    const auto crend() const { return books_.crend(); }
 
     const BookContainer &GetBooks() const { return books_; }
     const AuthorContainer &GetAuthors() const { return authors_; }

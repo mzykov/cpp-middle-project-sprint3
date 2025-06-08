@@ -8,8 +8,7 @@
 
 namespace bookdb {
 
-template <class InputIt, class UnaryPred>
-auto filterBooks(InputIt first, InputIt last, UnaryPred pred) {
+auto filterBooks(BookIterator auto first, BookIterator auto last, BookPredicate auto pred) {
     std::vector<std::reference_wrapper<const Book>> res;
     std::copy_if(first, last, std::back_inserter(res), pred);
     return res;
