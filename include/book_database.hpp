@@ -46,13 +46,13 @@ public:
     bool empty() const { return books_.empty() && authors_.empty(); }
     std::size_t size() const { return books_.size(); }
     auto begin() { return books_.begin(); }
-    auto cbegin() { return books_.cbegin(); }
     auto end() { return books_.end(); }
-    auto cend() { return books_.cend(); }
+    auto cbegin() const { return books_.cbegin(); }
+    auto cend() const { return books_.cend(); }
     auto rbegin() { return books_.rbegin(); }
-    auto crbegin() { return books_.crbegin(); }
     auto rend() { return books_.rend(); }
-    auto crend() { return books_.rcend(); }
+    auto crbegin() const { return books_.crbegin(); }
+    auto crend() const { return books_.rcend(); }
 
     const BookContainer &GetBooks() const { return books_; }
     const AuthorContainer &GetAuthors() const { return authors_; }

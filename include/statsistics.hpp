@@ -17,42 +17,35 @@
 namespace bookdb {
 
 template <BookContainerLike T, typename Comparator = TransparentStringLess>
-auto buildAuthorHistogramFlat(BookDatabase<T> &db, Comparator cmp = {}) {
+auto buildAuthorHistogramFlat(const BookDatabase<T> &db, Comparator cmp = {}) {
     boost::container::flat_map<std::string_view, std::size_t> hist;
-
-    for (const auto &book : db) {
-        ++hist[book.GetAuthor()];
-    }
-
+    std::for_each(db.cbegin(), db.cend(), [&](const auto &book) { ++hist[book.GetAuthor()]; });
     return hist;
 }
 
 template <BookContainerLike T, typename Comparator = TransparentStringLess>
-auto calculateGenreRatings(BookDatabase<T> &db, Comparator cmp = {}) {
+auto calculateGenreRatings(const BookDatabase<T> &db, Comparator cmp = {}) {
     boost::container::flat_map<Genre, std::pair<std::size_t, double>> stats;
 
-    for (const auto &book : db) {
+    std::for_each(db.cbegin(), db.cend(), [&](const auto &book) {
         auto g = book.GetGenre();
         ++std::get<std::size_t>(stats[g]);
         std::get<double>(stats[g]) += book.GetRating();
-    }
+    });
 
     boost::container::flat_map<std::string_view, double> hist;
 
-    for (const auto &[genre, stat] : stats) {
-        hist[GenreToString(genre)] = static_cast<double>(std::get<double>(stat) / std::get<std::size_t>(stat));
-    }
+    std::for_each(stats.cbegin(), stats.cend(), [&hist](const auto &p) {
+        const auto &[genre, stat] = p;
+        hist[GenreToString(genre)] = std::get<double>(stat) / std::get<std::size_t>(stat);
+    });
 
     return hist;
 }
 
 template <BookContainerLike T, typename Aggregator = TransparentRatingPlus>
-auto calculateAverageRating(BookDatabase<T> &db, Aggregator aggr = {}) {
-    double res = 0.0;
-    for (const auto &book : db) {
-        res += book.GetRating();
-    }
-    return static_cast<double>(res / db.size());
+double calculateAverageRating(const BookDatabase<T> &db, Aggregator aggr = {}) {
+    return std::accumulate(db.cbegin(), db.cend(), 0.0, aggr) / db.size();
 }
 
 template <BookContainerLike T, typename Comparator>
