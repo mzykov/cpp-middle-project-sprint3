@@ -11,7 +11,7 @@ template <typename T>
 concept BookContainerLike = true;
 
 template <typename T>
-concept BookIterator = true;
+concept BookIterator = std::contiguous_iterator<T>;
 
 template <typename S, typename I>
 concept BookSentinel = std::sentinel_for<S, I>;

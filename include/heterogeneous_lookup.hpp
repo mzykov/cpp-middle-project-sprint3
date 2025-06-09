@@ -1,6 +1,6 @@
 #pragma once
 
-#include <string_view>
+#include <string>
 
 namespace bookdb {
 
@@ -20,6 +20,8 @@ struct TransparentStringEqual {
 
 struct TransparentStringHash {
     using is_transparent = void;
+    auto operator()(const Book &book) const { return std::hash<std::string>{}(book.title); }
+    auto operator()(const std::string &title) const { return std::hash<std::string>{}(title); }
 };
 
 struct TransparentRatingPlus {
