@@ -64,8 +64,15 @@ public:
         }
     }
 
-    void PushBack(auto &&...args) {
-        books_.push_back(std::forward<decltype(args)>(args)...);
+    constexpr void PushBack(const Book &book) {
+        books_.push_back(book);
+        if (auto author = books_.back().GetAuthor(); author.length() > 0) {
+            authors_.insert(author);
+        }
+    }
+
+    constexpr void PushBack(Book &&book) {
+        books_.push_back(book);
         if (auto author = books_.back().GetAuthor(); author.length() > 0) {
             authors_.insert(author);
         }
