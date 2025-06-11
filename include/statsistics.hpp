@@ -16,15 +16,15 @@
 
 namespace bookdb {
 
-template <BookContainerLike T, typename Comparator = TransparentStringLess>
-auto buildAuthorHistogramFlat(const BookDatabase<T> &db, Comparator cmp = {}) {
+template <BookContainerLike T>
+auto buildAuthorHistogramFlat(const BookDatabase<T> &db) {
     boost::container::flat_map<std::string_view, std::size_t> hist;
     std::for_each(db.cbegin(), db.cend(), [&](const auto &book) { ++hist[book.GetAuthor()]; });
     return hist;
 }
 
-template <BookContainerLike T, typename Comparator = TransparentStringLess>
-auto calculateGenreRatings(const BookDatabase<T> &db, Comparator cmp = {}) {
+template <BookContainerLike T>
+auto calculateGenreRatings(const BookDatabase<T> &db) {
     boost::container::flat_map<Genre, std::pair<std::size_t, double>> stats;
 
     std::for_each(db.cbegin(), db.cend(), [&](const auto &book) {
@@ -62,7 +62,7 @@ auto getTopNBy(BookDatabase<T> &db, std::size_t top, Comparator cmp) {
 }
 
 template <BookContainerLike T>
-auto sampleRandomBooks(BookDatabase<T> &db, std::size_t top) {
+auto sampleRandomBooks(const BookDatabase<T> &db, std::size_t top) {
     std::vector<std::reference_wrapper<const Book>> res;
     std::sample(db.cbegin(), db.cend(), std::back_inserter(res), top, std::mt19937{std::random_device{}()});
     return res;

@@ -8,13 +8,14 @@
 
 namespace bookdb {
 
-auto filterBooks(BookIterator auto first, BookIterator auto last, BookPredicate auto pred) {
+template <BookIterator It, BookSentinel<It> Sent, BookPredicate Pred>
+auto filterBooks(const It first, const Sent last, const Pred pred) {
     std::vector<std::reference_wrapper<const Book>> res;
     std::copy_if(first, last, std::back_inserter(res), pred);
     return res;
 }
 
-auto GenreIs = [](std::string_view genre) {
+auto GenreIs = [](const std::string_view genre) {
     return [genre](const Book &book) { return book.GetGenre() == GenreFromString(genre); };
 };
 

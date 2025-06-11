@@ -20,7 +20,7 @@ int main() {
     db.EmplaceBack("Brave New World", "Aldous Huxley", 1932, Genre::SciFi, 3.5, 98);
     db.EmplaceBack("Jane Eyre", "Charlotte Brontë", 1847, Genre::Fiction, 4.6, 110);
     db.EmplaceBack("The Hobbit", "J.R.R. Tolkien", 1937, Genre::Fiction, 4.9, 203);
-    db.PushBack({ "Lord of the Flies", "William Golding", 1954, Genre::Fiction, 4.2, 89 });
+    db.PushBack({"Lord of the Flies", "William Golding", 1954, Genre::Fiction, 4.2, 89});
     std::print("Books: {}\n\n", db);
 
     // Sort by author
