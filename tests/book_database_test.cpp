@@ -1,119 +1,40 @@
-/*
-#include "cmd_options.h"
+#include "book_database.hpp"
 #include <gtest/gtest.h>
+#include <print>
 
-// 1.
-TEST(TestProgramOptions, TestHelp) {
+#include "test.hpp"
+
+TEST(TestBookDataBase, TestEmpty) {
     // given
-    int ac = 2;
-    const char *av[] = {"./CryptoGuard", "--help"};
+    const auto db = bookdb::BookDatabase();
     // when
-    CryptoGuard::ProgramOptions opts;
-    const auto [ok, _] = opts.Parse(ac, const_cast<char **>(av));
+    const auto &books = db.GetBooks();
+    const auto &authors = db.GetAuthors();
     // then
-    EXPECT_EQ(ok, true);
-    EXPECT_EQ(opts.GetCommand(), CryptoGuard::ProgramOptions::COMMAND_TYPE::HELP);
+    EXPECT_EQ(books.empty(), true);
+    EXPECT_EQ(authors.empty(), true);
+    EXPECT_EQ(db.empty(), true);
 }
 
-// 2.
-TEST(TestProgramOptions, TestChecksum) {
+TEST(TestBookDataBase, TestPushBack) {
     // given
-    int ac = 5;
-    const char *av[] = {
-        "./CryptoGuard", "--command", "checksum", "--input", "/path/to/file",
-    };
+    auto db = bookdb::BookDatabase();
     // when
-    CryptoGuard::ProgramOptions opts;
-    const auto [ok, _] = opts.Parse(ac, const_cast<char **>(av));
+    db.PushBack(bookdb::test::GetTestBook());
     // then
-    EXPECT_EQ(ok, true);
-    EXPECT_EQ(opts.GetCommand(), CryptoGuard::ProgramOptions::COMMAND_TYPE::CHECKSUM);
-    EXPECT_EQ(opts.GetInputFile(), "/path/to/file");
+    EXPECT_EQ(db.size(), 1);
 }
 
-// 3.
-TEST(TestProgramOptions, TestEncrypt) {
+TEST(TestBookDataBase, TestNoAuthorDuplicates) {
     // given
-    int ac = 9;
-    const char *av[] = {
-        "./CryptoGuard",        "--command",  "encrypt", "--input", "/path/to/input/file", "--output",
-        "/path/to/output/file", "--password", "QWERTY",
-    };
+    auto db = bookdb::BookDatabase();
     // when
-    CryptoGuard::ProgramOptions opts;
-    const auto [ok, _] = opts.Parse(ac, const_cast<char **>(av));
+    db.PushBack(bookdb::test::GetTestBook());
+    db.PushBack(bookdb::test::GetTestBook());
     // then
-    EXPECT_EQ(ok, true);
-    EXPECT_EQ(opts.GetCommand(), CryptoGuard::ProgramOptions::COMMAND_TYPE::ENCRYPT);
-    EXPECT_EQ(opts.GetInputFile(), "/path/to/input/file");
-    EXPECT_EQ(opts.GetOutputFile(), "/path/to/output/file");
-    EXPECT_EQ(opts.GetPassword(), "QWERTY");
+    EXPECT_EQ(db.size(), 2);
+    EXPECT_EQ(db.GetBooks().size(), 2);
+    EXPECT_EQ(db.GetAuthors().size(), 1);
 }
 
-// 4.
-TEST(TestProgramOptions, TestDecrypt) {
-    // given
-    int ac = 9;
-    const char *av[] = {
-        "./CryptoGuard",        "--command",  "decrypt", "--input", "/path/to/input/file", "--output",
-        "/path/to/output/file", "--password", "QWERTY",
-    };
-    // when
-    CryptoGuard::ProgramOptions opts;
-    const auto [ok, _] = opts.Parse(ac, const_cast<char **>(av));
-    // then
-    EXPECT_EQ(ok, true);
-    EXPECT_EQ(opts.GetCommand(), CryptoGuard::ProgramOptions::COMMAND_TYPE::DECRYPT);
-    EXPECT_EQ(opts.GetInputFile(), "/path/to/input/file");
-    EXPECT_EQ(opts.GetOutputFile(), "/path/to/output/file");
-    EXPECT_EQ(opts.GetPassword(), "QWERTY");
-}
-
-// 5.
-TEST(TestProgramOptions, TestChecksumNoInput) {
-    // given
-    int ac = 3;
-    const char *av[] = {
-        "./CryptoGuard",
-        "--command",
-        "checksum",
-    };
-    // when
-    CryptoGuard::ProgramOptions opts;
-    const auto [ok, _] = opts.Parse(ac, const_cast<char **>(av));
-    // then
-    EXPECT_EQ(ok, false);
-}
-
-// 6.
-TEST(TestProgramOptions, TestDecryptNoInputOutput) {
-    // given
-    int ac = 3;
-    const char *av[] = {
-        "./CryptoGuard",
-        "--command",
-        "decrypt",
-    };
-    // when
-    CryptoGuard::ProgramOptions opts;
-    const auto [ok, _] = opts.Parse(ac, const_cast<char **>(av));
-    // then
-    EXPECT_EQ(ok, false);
-}
-
-// 7.
-TEST(TestProgramOptions, TestEncryptNoInputOutput) {
-    // given
-    int ac = 3;
-    const char *av[] = {
-        "./CryptoGuard",
-        "--command",
-        "encrypt",
-    };
-    // when
-    CryptoGuard::ProgramOptions opts;
-    const auto [ok, _] = opts.Parse(ac, const_cast<char **>(av));
-    // then
-    EXPECT_EQ(ok, false);
-}
-*/
+TEST(TestBookDataBase, TestFormatter) { std::println("{}", bookdb::BookDatabase()); }
