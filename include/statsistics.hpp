@@ -28,9 +28,9 @@ auto calculateGenreRatings(const BookDatabase<T> &db) {
     boost::container::flat_map<Genre, std::pair<std::size_t, double>> stats;
 
     std::for_each(db.cbegin(), db.cend(), [&](const auto &book) {
-        auto g = book.GetGenre();
-        ++std::get<std::size_t>(stats[g]);
-        std::get<double>(stats[g]) += book.GetRating();
+        auto &[count, value] = stats[book.GetGenre()];
+        ++count;
+        value += book.GetRating();
     });
 
     boost::container::flat_map<std::string_view, double> hist;
