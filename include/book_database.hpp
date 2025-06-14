@@ -1,8 +1,8 @@
 #pragma once
 
 #include <print>
-#include <set>
 #include <string>
+#include <unordered_set>
 #include <vector>
 
 #include "book.hpp"
@@ -27,14 +27,12 @@ public:
     using reverse_iterator = BookContainer::reverse_iterator;
     using const_reverse_iterator = const reverse_iterator;
 
-    using AuthorContainer = std::set<std::string_view>;
+    using AuthorContainer = std::unordered_set<std::string>;
 
     constexpr BookDatabase() = default;
     constexpr BookDatabase(std::initializer_list<const Book> lst) : books_(lst) {
-        for (const auto &book : books_) {
-            if (const auto author = book.GetAuthor(); author.length() > 0) {
-                authors_.insert(author);
-            }
+        for (auto &book : books_) {
+            moveAuthorOwnership(book);
         }
     }
 
@@ -59,28 +57,29 @@ public:
 
     void EmplaceBack(auto &&...args) {
         books_.emplace_back(std::forward<decltype(args)>(args)...);
-        if (auto author = books_.back().GetAuthor(); author.length() > 0) {
-            authors_.insert(author);
-        }
+        moveAuthorOwnership(books_.back());
     }
 
     constexpr void PushBack(const Book &book) {
         books_.push_back(book);
-        if (auto author = books_.back().GetAuthor(); author.length() > 0) {
-            authors_.insert(author);
-        }
+        moveAuthorOwnership(books_.back());
     }
 
     constexpr void PushBack(Book &&book) {
         books_.push_back(book);
-        if (auto author = books_.back().GetAuthor(); author.length() > 0) {
-            authors_.insert(author);
-        }
+        moveAuthorOwnership(books_.back());
     }
 
 private:
     BookContainer books_;
     AuthorContainer authors_;
+
+    constexpr void moveAuthorOwnership(Book &book) {
+        if (book.author.length() > 0) {
+            auto [it, _] = authors_.emplace(book.author.data());
+            book.author = *it;
+        }
+    }
 };
 
 }  // namespace bookdb
