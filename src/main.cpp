@@ -47,7 +47,7 @@ int main() {
         std::print("\n\nAverage ratings by genres:\n{}\n", genreRatings);
 
         auto avgRating = calculateAverageRating(db);
-        std::print("Average books rating in library: {}\n", avgRating);
+        std::print("Average books rating in library: {:.3}\n", avgRating);
     }
 
     // Filters all_of

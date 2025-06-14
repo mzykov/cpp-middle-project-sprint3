@@ -29,6 +29,7 @@ struct TransparentRatingPlus {
     double operator()(const double l, const Book &book) { return l + book.GetRating(); }
     double operator()(const Book &book, const double r) { return book.GetRating() + r; }
     double operator()(const Book &lhd, const Book &rhd) { return lhd.GetRating() + rhd.GetRating(); }
+    double operator()(const double l, const double r) { return l + r; }
 };
 
 }  // namespace bookdb

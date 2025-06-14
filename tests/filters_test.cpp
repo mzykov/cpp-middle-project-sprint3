@@ -10,7 +10,7 @@ TEST(TestFilters, TestGenreIs) {
     // when
     bool ok = filter(book);
     // then
-    EXPECT_EQ(ok, true);
+    EXPECT_TRUE(ok);
 }
 
 TEST(TestFilters, TestRatingAbove) {
@@ -20,7 +20,7 @@ TEST(TestFilters, TestRatingAbove) {
     // when
     bool ok = filter(book);
     // then
-    EXPECT_EQ(ok, true);
+    EXPECT_TRUE(ok);
 }
 
 TEST(TestFilters, TestYearBetween) {
@@ -30,7 +30,7 @@ TEST(TestFilters, TestYearBetween) {
     // when
     bool ok = filter(book);
     // then
-    EXPECT_EQ(ok, true);
+    EXPECT_TRUE(ok);
 }
 
 TEST(TestFilters, TestAllOfTrue) {
@@ -40,7 +40,7 @@ TEST(TestFilters, TestAllOfTrue) {
     // when
     bool ok = filter(book);
     // then
-    EXPECT_EQ(ok, true);
+    EXPECT_TRUE(ok);
 }
 
 TEST(TestFilters, TestAllOfFalse) {
@@ -50,7 +50,7 @@ TEST(TestFilters, TestAllOfFalse) {
     // when
     bool ok = filter(book);
     // then
-    EXPECT_EQ(ok, false);
+    EXPECT_FALSE(ok);
 }
 
 TEST(TestFilters, TestAnyOfTrue) {
@@ -60,7 +60,7 @@ TEST(TestFilters, TestAnyOfTrue) {
     // when
     bool ok = filter(book);
     // then
-    EXPECT_EQ(ok, true);
+    EXPECT_TRUE(ok);
 }
 
 TEST(TestFilters, TestAnyOfFalse) {
@@ -70,5 +70,5 @@ TEST(TestFilters, TestAnyOfFalse) {
     // when
     bool ok = filter(book);
     // then
-    EXPECT_EQ(ok, false);
+    EXPECT_FALSE(ok);
 }

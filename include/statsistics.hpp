@@ -45,11 +45,13 @@ auto calculateGenreRatings(const BookDatabase<T> &db) {
 
 template <BookContainerLike T, typename Aggregator = TransparentRatingPlus>
 double calculateAverageRating(const BookDatabase<T> &db, Aggregator aggr = {}) {
-    return std::accumulate(db.cbegin(), db.cend(), 0.0, aggr) / db.size();
+    return std::reduce(db.cbegin(), db.cend(), 0.0, aggr) / db.size();
 }
 
 template <BookContainerLike T, BookComparator C>
 auto getTopNBy(BookDatabase<T> &db, std::size_t top, C cmp) {
+    top = std::min(top, db.size());
+
     {
         auto mid = std::next(db.begin(), top);
         std::partial_sort(db.begin(), mid, db.end(), cmp);

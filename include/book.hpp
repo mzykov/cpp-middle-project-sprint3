@@ -42,12 +42,12 @@ struct Book {
 
     // clang-format off
     constexpr Book(
-        const std::string &book_title,
-        std::string_view   book_author,
-        unsigned int       book_year,
-        Genre              book_genre, // Genre as enum
-        double             book_rating,
-        unsigned int       book_read_count
+        std::string_view book_title,
+        std::string_view book_author,
+        unsigned int     book_year,
+        Genre            book_genre, // Genre as enum
+        double           book_rating,
+        unsigned int     book_read_count
     ) :
         title(book_title),
         author(book_author),
@@ -60,12 +60,12 @@ struct Book {
 
     // clang-format off
     constexpr Book(
-        const std::string &book_title,
-        std::string_view   book_author,
-        unsigned int       book_year,
-        std::string_view   book_genre, // Genre as str
-        double             book_rating,
-        unsigned int       book_read_count
+        std::string_view book_title,
+        std::string_view book_author,
+        unsigned int     book_year,
+        std::string_view book_genre, // Genre as str
+        double           book_rating,
+        unsigned int     book_read_count
     ) :
         title(book_title),
         author(book_author),
