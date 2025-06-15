@@ -41,6 +41,7 @@ public:
         authors_.clear();
     }
 
+    auto back() const { return books_.back(); }
     bool empty() const { return books_.empty() && authors_.empty(); }
     std::size_t size() const { return books_.size(); }
     auto begin() { return books_.begin(); }
@@ -61,11 +62,6 @@ public:
     }
 
     constexpr void PushBack(const Book &book) {
-        books_.push_back(book);
-        moveAuthorOwnership(books_.back());
-    }
-
-    constexpr void PushBack(Book &&book) {
         books_.push_back(book);
         moveAuthorOwnership(books_.back());
     }
