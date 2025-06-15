@@ -10,6 +10,8 @@ namespace bookdb {
 template <typename T>
 concept BookContainerLike = requires(T t) {
     { *std::begin(t) } -> std::convertible_to<Book>;
+    std::end(t);
+    t.emplace_back();
 };
 
 template <typename T>
