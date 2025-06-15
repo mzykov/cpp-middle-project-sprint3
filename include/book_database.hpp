@@ -86,10 +86,10 @@ private:
 
 namespace std {
 
-template <>
-struct formatter<bookdb::BookDatabase<std::vector<bookdb::Book>>> {
+template <bookdb::BookContainerLike T>
+struct formatter<bookdb::BookDatabase<T>> {
     template <typename FormatContext>
-    auto format(const bookdb::BookDatabase<std::vector<bookdb::Book>> &db, FormatContext &fc) const {
+    auto format(const bookdb::BookDatabase<T> &db, FormatContext &fc) const {
         format_to(fc.out(), "BookDatabase (size = {}):\n", db.size());
 
         format_to(fc.out(), "Books:\n");
