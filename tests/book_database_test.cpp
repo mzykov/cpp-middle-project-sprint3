@@ -25,6 +25,37 @@ TEST(TestBookDataBase, TestPushBack) {
     EXPECT_EQ(db.size(), 1);
 }
 
+TEST(TestBookDataBase, TestEmplaceBack) {
+    // given
+    auto db = bookdb::BookDatabase();
+    // when
+    db.EmplaceBack("Book title", "Book author", 1917, "Unknown", 2.7, 100000);
+    // then
+    EXPECT_EQ(db.size(), 1);
+}
+
+TEST(TestBookDataBase, TestInitializerList) {
+    // given
+    auto db = bookdb::BookDatabase({
+        bookdb::test::GetTestBook(),
+        bookdb::test::GetTestBook(),
+        bookdb::test::GetTestBook(),
+    });
+    // when
+    auto gotSize = db.size();
+    // then
+    EXPECT_EQ(gotSize, 3);
+}
+
+TEST(TestBookDataBase, TestClear) {
+    // given
+    auto db = bookdb::BookDatabase({bookdb::test::GetTestBook()});
+    // when
+    db.clear();
+    // then
+    EXPECT_EQ(db.size(), 0);
+}
+
 TEST(TestBookDataBase, TestNoAuthorDuplicates) {
     // given
     auto db = bookdb::BookDatabase();

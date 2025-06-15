@@ -30,7 +30,7 @@ public:
     using AuthorContainer = std::unordered_set<std::string>;
 
     constexpr BookDatabase() = default;
-    constexpr BookDatabase(std::initializer_list<const Book> lst) : books_(lst) {
+    constexpr BookDatabase(std::initializer_list<Book> lst) : books_(lst) {
         for (auto &book : books_) {
             moveAuthorOwnership(book);
         }

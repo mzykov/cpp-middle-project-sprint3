@@ -11,7 +11,7 @@ int main() {
     BookDatabase<std::vector<Book>> db;
 
     // Add some books
-    db.EmplaceBack("1984", "George Orwell", 1949, Genre::SciFi, 4., 190);
+    db.EmplaceBack("1984", "George Orwell", 1949, Genre::SciFi, 4.0, 190);
     db.EmplaceBack("Animal Farm", "George Orwell", 1945, Genre::Fiction, 2.1, 143);
     db.EmplaceBack("The Great Gatsby", "F. Scott Fitzgerald", 1925, "Fiction", 4.5, 120);
     db.EmplaceBack("To Kill a Mockingbird", "Harper Lee", 1960, Genre::Fiction, 4.8, 156);
