@@ -8,18 +8,28 @@
 namespace bookdb {
 
 template <typename T>
-concept BookContainerLike = true;
+concept BookContainerLike = requires(T t, const Book &book) {
+    { *std::begin(t) } -> std::convertible_to<Book>;
+    std::end(t);
+    t.emplace_back();
+    t.push_back(book);
+    t.clear();
+};
 
 template <typename T>
-concept BookIterator = true;
+concept BookIterator = std::contiguous_iterator<T>;
 
 template <typename S, typename I>
-concept BookSentinel = true;
+concept BookSentinel = std::sentinel_for<S, I>;
 
 template <typename P>
-concept BookPredicate = true;
+concept BookPredicate = requires(P pred, const Book &book) {
+    { pred(book) } -> std::convertible_to<bool>;
+};
 
 template <typename C>
-concept BookComparator = true;
+concept BookComparator = requires(C cmp, const Book &lhd, const Book &rhd) {
+    { cmp(lhd, rhd) } -> std::convertible_to<bool>;
+};
 
 }  // namespace bookdb
